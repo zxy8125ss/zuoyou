@@ -22,7 +22,7 @@ const saveSets = () => { store.set('fav',[...S.fav]); store.set('seen',[...S.see
 const y1 = y => y < 0 ? '前' + (-y) : String(y);
 const yLabel = e => (e.approx ? '约' : '') + y1(e.year);
 const yRange = e => (e.approx ? '约' : '') + (e.endYear ? `${y1(e.year)}—${y1(e.endYear)}年` : `${y1(e.year)}年`);
-const lifeSpan = p => `${p.approx ? '约' : ''}${y1(p.birth)}—${y1(p.death)}`;
+const lifeSpan = p => p.death == null ? `${y1(p.birth)}年生` : `${p.approx ? '约' : ''}${y1(p.birth)}—${y1(p.death)}`;
 const sideName = e => e.side === 'cn' ? '中国史' : '世界史 · ' + (e.region || []).map(r => REGIONS[r]).join('、');
 const sc = side => side === 'cn' ? 'cn' : 'w';
 
@@ -766,7 +766,7 @@ function sliceBody(y){
   h += `<section class="sl-sec"><h3>此刻的世界 <small>${rows.length} 个主要政权</small></h3><div class="sl-states">`;
   h += rows.map(p => { const r = rulerAt(p.state, y); return `<div class="st-row"><i class="dot t-${p.tone}"></i><b>${p.name}</b><span>${r ? esc(reignText(r, y)) : esc(p.desc || '')}</span></div>`; }).join('');
   h += `</div><p class="sl-note">疆域为示意，不代表精确边界</p></section>`;
-  const alive = D.people.filter(p => p.birth <= y && y <= p.death).sort((a, b) => (a.side > b.side ? 1 : a.side < b.side ? -1 : a.birth - b.birth));
+  const alive = D.people.filter(p => p.birth <= y && y <= (p.death ?? 9999)).sort((a, b) => (a.side > b.side ? 1 : a.side < b.side ? -1 : a.birth - b.birth));
   h += `<section class="sl-sec"><h3>此刻在世 <small>${alive.length} 位人物库人物</small></h3>`;
   h += alive.length ? `<div class="pchips">${alive.map(p => `<button class="pchip ${sc(p.side)}" data-person="${p.id}">${esc(p.name.replace(/（.*）/, ''))}<small>${p.approx ? '约' : ''}${y - p.birth} 岁</small></button>`).join('')}</div>` : `<p class="center" style="font-size:13px">人物库中暂无此时在世的人</p>`;
   return h + `</section>`;

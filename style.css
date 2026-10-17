@@ -189,8 +189,8 @@ svg text{font-family:var(--sans);paint-order:stroke;stroke:var(--map-halo);strok
 .page{padding:6px 16px 28px}
 .page-h{margin:8px 0 12px;font-family:var(--serif);font-size:24px}
 .sub{color:var(--muted);font-size:13px;margin:-6px 0 14px}
-.pcards{display:grid;gap:10px}
-.pcard{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.pcards{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.pcard{display:block;width:100%;min-width:0;text-align:left;padding:12px 14px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
 .pc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .pc-n{font-family:var(--serif);font-weight:700;font-size:16.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard.cn .pc-n{color:var(--cn)} .pcard.w .pc-n{color:var(--w)}
