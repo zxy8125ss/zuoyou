@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '0.5.0';
+const VERSION = '0.5.1';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -379,10 +379,13 @@ function zoomAt(f, cx, cy){
 })();
 
 /* ---------- people ---------- */
+const ROLECAT = {帝王:'帝王',政治家:'政治',政治人物:'政治',革命家:'政治',外交家:'政治',和亲使者:'政治',农民领袖:'政治',社会活动家:'政治',军事家:'军事',思想家:'思想宗教',宗教人物:'思想宗教',宗教创始人:'思想宗教',宗教改革家:'思想宗教',僧人:'思想宗教',传教士:'思想宗教',科学家:'科学发明',发明家:'科学发明',农学家:'科学发明',文学家:'文史艺术',诗人:'文史艺术',书法家:'文史艺术',剧作家:'文史艺术',艺术家:'文史艺术',史学家:'文史艺术',航海家:'探索远行',旅行家:'探索远行',宇航员:'探索远行',航天员:'探索远行',传说人物:'传说'};
+const roleCat = r => ROLECAT[r] || '其他';
 function renderPeople(){
   const f = S.pFilter;
-  const roles = [...new Set(D.people.map(p => p.role))].sort((a, b) => D.people.filter(p => p.role === b).length - D.people.filter(p => p.role === a).length);
-  const list = D.people.filter(p => (f.side === 'all' || p.side === f.side) && (f.role === 'all' || p.role === f.role) && (f.period === 'all' || p.period === f.period))
+  const roles = [...new Set(D.people.map(p => roleCat(p.role)))].sort((a, b) => D.people.filter(p => roleCat(p.role) === b).length - D.people.filter(p => roleCat(p.role) === a).length);
+  if (f.role !== 'all' && !roles.includes(f.role)) f.role = 'all';
+  const list = D.people.filter(p => (f.side === 'all' || p.side === f.side) && (f.role === 'all' || roleCat(p.role) === f.role) && (f.period === 'all' || p.period === f.period))
     .sort((a,b) => a.birth - b.birth);
   let h = `<div class="page"><h2 class="page-h">人物</h2><p class="sub">共 ${D.people.length} 位 · 当前 ${list.length} 位 · 按出生年排列</p>
     <div class="filters">${[['all','全部'],['cn','中国'],['world','世界']].map(([k,v]) => `<button class="chip ${k==='cn'?'cn':k==='world'?'w':''} ${f.side===k?'on':''}" data-act="pside" data-v="${k}">${v}</button>`).join('')}</div>
