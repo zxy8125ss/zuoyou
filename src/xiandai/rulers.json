@@ -1,7 +1,7 @@
 [
-{"state":"prc","name":"毛泽东（中央人民政府主席、中共中央主席）","start":1949,"end":1976,"head":1},
+{"state":"prc","name":"毛泽东","start":1949,"end":1976,"head":1},
 {"state":"prc","name":"华国锋","start":1976,"end":1978,"head":1},
-{"state":"prc","name":"邓小平（改革开放的领导核心）","start":1978,"end":1989,"head":1},
+{"state":"prc","name":"邓小平","start":1978,"end":1989,"head":1},
 {"state":"prc","name":"江泽民","start":1989,"end":2002,"head":1},
 {"state":"prc","name":"胡锦涛","start":2002,"end":2012,"head":1},
 {"state":"prc","name":"习近平","start":2012,"end":2020,"head":1},

@@ -1,5 +1,5 @@
 // 网络优先：在线时总取最新版本（绕过 HTTP 缓存），离线时用缓存
-const CACHE = 'zuoyou-v0.4.0';
+const CACHE = 'zuoyou-v0.5.0';
 const ASSETS = ['./','index.html','style.css','app.js','manifest.json','version.json','data/events.json','data/people.json','data/periods.json','data/rulers.json','data/images.json','icons/icon-192.png'];
 // 图片按需缓存（首次查看后离线可用）
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); });
