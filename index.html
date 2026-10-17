@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>左右千年</title>
+<meta name="description" content="左手中国史，右手世界史：中外历史对照时间轴">
+<meta name="theme-color" content="#F5EEDC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1814" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="左右千年">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1 class="brand"><span class="b-cn">左</span><span class="b-w">右</span>千年</h1>
+  <button class="icon-btn" id="btn-search" aria-label="搜索">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+  </button>
+</header>
+
+<main id="view"></main>
+
+<nav class="tabbar" id="tabbar">
+  <button data-tab="timeline" class="on"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h5M14 11h5M5 15h5M14 19h5"/></svg><span>时间轴</span></button>
+  <button data-tab="people"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg><span>人物</span></button>
+  <button data-tab="quiz"><svg viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.5 2.6c-.9.5-1.5 1.2-1.5 2.2V15"/><circle cx="12" cy="19" r=".6"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span>自测</span></button>
+  <button data-tab="me"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span>我的</span></button>
+</nav>
+
+<div class="sheet-wrap" id="sheet" hidden>
+  <div class="sheet-bg" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-grip"></div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+</div>
+
+<div class="overlay" id="search" hidden>
+  <div class="ov-head">
+    <input id="search-input" type="search" placeholder="搜索事件、人物、地点、年份" autocomplete="off">
+    <button class="text-btn" id="search-close">取消</button>
+  </div>
+  <div class="ov-body" id="search-results"></div>
+</div>
+
+<div class="overlay map-ov" id="mapview" hidden>
+  <div class="ov-head">
+    <div class="map-title" id="map-title"></div>
+    <button class="text-btn" id="map-close">关闭</button>
+  </div>
+  <div class="map-stage" id="map-stage"><div class="map-inner" id="map-inner"></div></div>
+  <div class="map-foot">
+    <span>示意图，非精确疆域 · 双指缩放</span>
+    <span class="map-btns"><button id="map-out" aria-label="缩小">−</button><button id="map-reset">复原</button><button id="map-in" aria-label="放大">＋</button></span>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
