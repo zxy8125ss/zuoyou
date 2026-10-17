@@ -1,6 +1,6 @@
 // 网络优先：在线时总取最新版本（绕过 HTTP 缓存），离线时用缓存
-const CACHE = 'zuoyou-v0.1.0';
-const ASSETS = ['./','index.html','style.css','app.js','manifest.json','version.json','data/events.json','data/people.json','data/periods.json','maps/cn-suitang.svg','maps/w-suitang.svg','icons/icon-192.png'];
+const CACHE = 'zuoyou-v0.2.0';
+const ASSETS = ['./','index.html','style.css','app.js','manifest.json','version.json','data/events.json','data/people.json','data/periods.json','data/rulers.json','data/slice-map.json','maps/cn-suitang.svg','maps/w-suitang.svg','icons/icon-192.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); });
 self.addEventListener('activate', e => e.waitUntil((async () => {
   for (const k of await caches.keys()) if (k !== CACHE) await caches.delete(k);

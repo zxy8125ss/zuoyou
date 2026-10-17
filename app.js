@@ -1,7 +1,7 @@
 'use strict';
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
-const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断'};
+const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -10,9 +10,9 @@ const store = {
   set(k, v){ try{ localStorage.setItem('zy.' + k, JSON.stringify(v)); }catch(e){} }
 };
 
-const D = {events:[], people:[], periods:[], ev:{}, pp:{}, per:{}, maps:{}};
+const D = {events:[], people:[], periods:[], rulers:[], sm:null, ev:{}, pp:{}, per:{}, maps:{}, effects:{}, links:{}};
 const S = {
-  tab:'timeline', mode: store.get('mode','both'), regions: new Set(store.get('regions', [])), person:null,
+  tab:'slice', year: store.get('year', 755), playing:null, mode: store.get('mode','both'), regions: new Set(store.get('regions', [])), person:null,
   fav: new Set(store.get('fav', [])), seen: new Set(store.get('seen', [])),
   quiz:null, pFilter:{side:'all', role:'all'}, qScope:'all'
 };
@@ -33,9 +33,16 @@ function toast(msg){
 
 /* ---------- boot ---------- */
 async function boot(){
-  const [events, people, periods] = await Promise.all(['events','people','periods'].map(n => fetch(`data/${n}.json`).then(r => r.json())));
+  const [events, people, periods, rulers, sm] = await Promise.all(['events','people','periods','rulers','slice-map'].map(n => fetch(`data/${n}.json`).then(r => r.json())));
   events.sort((a,b) => a.year - b.year || (a.side < b.side ? -1 : 1));
-  Object.assign(D, {events, people, periods});
+  Object.assign(D, {events, people, periods, rulers, sm});
+  for (const e of events) {
+    (e.causes || []).forEach(c => (D.effects[c] = D.effects[c] || []).push(e.id));
+    (e.links || []).forEach(l => {
+      (D.links[e.id] = D.links[e.id] || []).push(l);
+      (D.links[l.id] = D.links[l.id] || []).push({id: e.id, n: l.n});
+    });
+  }
   events.forEach(e => D.ev[e.id] = e);
   people.forEach(p => D.pp[p.id] = p);
   periods.forEach(p => D.per[p.id] = p);
@@ -54,7 +61,7 @@ async function boot(){
 function bindChrome(){
   $('#tabbar').addEventListener('click', e => {
     const b = e.target.closest('button[data-tab]'); if (!b) return;
-    S.tab = b.dataset.tab; render(); window.scrollTo(0,0);
+    stopPlay(); S.tab = b.dataset.tab; render(); window.scrollTo(0,0);
   });
   $('#sheet').addEventListener('click', e => { if (e.target.hasAttribute('data-close')) closeSheet(); });
   $('#btn-search').addEventListener('click', openSearch);
@@ -71,10 +78,14 @@ function delegated(e){
   if (!t) return;
   if (t.dataset.ev) { openEvent(t.dataset.ev); return; }
   if (t.dataset.person) { openPerson(t.dataset.person); return; }
-  if (t.dataset.map) { openMap(t.dataset.map, t.dataset.title); return; }
+  if (t.dataset.map) { t.dataset.map === 'slice' ? showMap(sliceSVG(S.year, true), S.year + '年的世界（示意）') : openMap(t.dataset.map, t.dataset.title); return; }
   const a = t.dataset.act, v = t.dataset.v;
   const acts = {
     mode(){ switchMode(v); },
+    ystep(){ stopPlay(); setYear(S.year + +v); },
+    yjump(){ stopPlay(); const ys = [...new Set(D.events.map(e => e.year))]; const y = +v > 0 ? ys.find(y => y > S.year) : [...ys].reverse().find(y => y < S.year); if (y != null) setYear(y); },
+    yplay(){ S.playing ? stopPlay() : startPlay(); },
+    goSlice(){ closeSheet(); $('#search').hidden = true; stopPlay(); S.tab = 'slice'; S.year = +v; store.set('year', S.year); render(); window.scrollTo(0,0); },
     period(){ jumpPeriod(v); },
     region(){ S.regions.has(v) ? S.regions.delete(v) : S.regions.add(v); store.set('regions',[...S.regions]); keepPos(renderTimeline); },
     regionAll(){ S.regions.clear(); store.set('regions',[]); keepPos(renderTimeline); },
@@ -97,7 +108,7 @@ function delegated(e){
 
 function render(){
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
-  ({timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, me:renderMe})[S.tab]();
+  ({slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, me:renderMe})[S.tab]();
 }
 
 /* ---------- timeline ---------- */
@@ -230,24 +241,39 @@ function contemporaries(e, n = 3){
     .sort((a,b) => a.year - b.year);
 }
 
+const evRow = (o, note) => `<button data-ev="${o.id}"><span class="sy ${sc(o.side)}">${yLabel(o)}</span><span class="st">${esc(o.title)}${note ? `<small>${esc(note)}</small>` : ''}</span></button>`;
 function openEvent(id){
   const e = D.ev[id]; if (!e) return;
   if (!S.seen.has(id)) { S.seen.add(id); saveSets(); }
   const ppl = (e.people || []).map(pid => D.pp[pid]).filter(Boolean);
   const same = contemporaries(e);
   const other = e.side === 'cn' ? '世界' : '中国';
+  const causes = (e.causes || []).map(c => D.ev[c]).filter(Boolean);
+  const effects = (D.effects[id] || []).map(c => D.ev[c]);
+  const links = (D.links[id] || []).filter((l, i, a) => a.findIndex(x => x.id === l.id) === i);
   let h = `<div class="s-side ${sc(e.side)}">${sideName(e)} · ${D.per[e.period].name}</div>
     <h2 class="s-title">${esc(e.title)}</h2>
     <div class="s-when">${yRange(e)}${e.place ? ' · ' + esc(e.place) : ''}</div>
-    <p class="s-sum">${esc(e.summary)}</p>
-    <p class="s-detail">${esc(e.detail)}</p>`;
-  if (e.note) h += `<div class="s-note">一说：${esc(e.note)}</div>`;
+    <p class="s-sum">${esc(e.summary)}</p>`;
+  if (e.bg) h += `<div class="s-block"><h4>背景</h4><p>${esc(e.bg)}</p></div><div class="s-block"><h4>经过</h4><p>${esc(e.proc)}</p></div><div class="s-block"><h4>影响</h4><p>${esc(e.impact)}</p></div>`;
+  else h += `<p class="s-detail">${esc(e.detail)}</p>`;
+  if (e.quote) h += `<figure class="s-quote ${sc(e.side)}"><blockquote>${esc(e.quote.t)}</blockquote><figcaption>${esc(e.quote.src)}</figcaption></figure>`;
+  if (e.debate) h += `<div class="s-block s-debate"><h4>史家怎么看</h4><p>${esc(e.debate)}</p></div>`;
+  if (e.note) h += `<div class="s-note">年代说明：${esc(e.note)}</div>`;
+  if (causes.length || effects.length) {
+    h += `<div class="s-sec">前因后果</div><div class="chain">`;
+    if (causes.length) h += `<div class="ch-l">前因</div><div class="same">${causes.map(o => evRow(o)).join('')}</div>`;
+    if (effects.length) h += `<div class="ch-l">后果</div><div class="same">${effects.map(o => evRow(o)).join('')}</div>`;
+    h += `</div>`;
+  }
+  if (links.length) h += `<div class="s-sec">中外关联</div><div class="same">${links.map(l => evRow(D.ev[l.id], l.n)).join('')}</div>`;
   if (ppl.length) h += `<div class="s-sec">相关人物</div><div class="pchips">${ppl.map(p => `<button class="pchip ${sc(p.side)}" data-person="${p.id}">${esc(p.name)}</button>`).join('')}</div>`;
   h += `<div class="s-sec">同一时期的${other}</div>`;
-  h += same.length ? `<div class="same">${same.map(o => `<button data-ev="${o.id}"><span class="sy ${sc(o.side)}">${yLabel(o)}</span><span class="st">${esc(o.title)}</span></button>`).join('')}</div>`
+  h += same.length ? `<div class="same">${same.map(o => evRow(o)).join('')}</div>`
                    : `<div class="center" style="font-size:13px">前后 25 年内暂无收录</div>`;
-  h += `<div class="s-actions"><button class="btn ${S.fav.has(id)?'fav-on':''}" data-act="fav" data-v="${id}">${S.fav.has(id)?'★ 已收藏':'☆ 收藏'}</button>
-    <button class="btn pri" data-act="locate" data-v="${id}">在时间轴中定位</button></div>`;
+  h += `<div class="s-actions three"><button class="btn ${S.fav.has(id)?'fav-on':''}" data-act="fav" data-v="${id}">${S.fav.has(id)?'★ 已收藏':'☆ 收藏'}</button>
+    <button class="btn" data-act="goSlice" data-v="${e.year}">看${y1(e.year)}年</button>
+    <button class="btn pri" data-act="locate" data-v="${id}">对照定位</button></div>`;
   openSheet(h);
   if (S.tab === 'timeline') { const c = document.querySelector(`.ev[data-ev="${id}"]`); c && c.classList.add('seen'); }
 }
@@ -278,7 +304,7 @@ function renderSearch(q){
   const box = $('#search-results');
   if (!q) { box.innerHTML = `<div class="empty">可以搜「玄奘」「巴格达」「755」</div>`; return; }
   const ql = q.toLowerCase();
-  const evs = D.events.filter(e => [e.title, e.summary, e.detail, e.place, yLabel(e), String(e.year)].join(' ').toLowerCase().includes(ql));
+  const evs = D.events.filter(e => [e.title, e.summary, e.bg, e.proc, e.impact, e.place, yLabel(e), String(e.year)].join(' ').toLowerCase().includes(ql));
   const ps = D.people.filter(p => [p.name, p.role, p.oneline, p.bio].join(' ').toLowerCase().includes(ql));
   let h = '';
   if (ps.length) h += `<div class="res-h">人物 · ${ps.length}</div>` + ps.map(p => `<button class="res" data-person="${p.id}"><b>${hi(p.name,q)}</b><small>${lifeSpan(p)} · ${esc(p.oneline)}</small></button>`).join('');
@@ -288,10 +314,11 @@ function renderSearch(q){
 
 /* ---------- map viewer (pinch / pan) ---------- */
 const MV = {s:1, x:0, y:0, pts:new Map(), base:null};
-async function openMap(id, title){
+async function openMap(id, title){ showMap(await getMap(id), title); }
+function showMap(html, title){
   $('#map-title').textContent = title || '';
   $('#mapview').hidden = false; document.body.style.overflow = 'hidden';
-  const inner = $('#map-inner'); inner.innerHTML = await getMap(id);
+  $('#map-inner').innerHTML = html;
   fitMap();
 }
 function fitMap(){
@@ -386,6 +413,16 @@ const QGEN = {
     return {type:'person', ev:e, prompt:`与「${e.title}」（${yLabel(e)}）关系最直接的人物是？`, opts:opts.map(p => p.name), ans:opts.indexOf(right),
       exp:`${right.name}（${lifeSpan(right)}）：${right.oneline}。`};
   },
+  cause(pool){
+    const cand = pool.filter(e => (e.causes || []).length);
+    if (!cand.length) return null;
+    const e = pick(cand); const right = D.ev[pick(e.causes)];
+    const wrong = shuffle(D.events.filter(o => o.year > e.year && !e.causes.includes(o.id) && o.id !== e.id)).slice(0, 3);
+    if (wrong.length < 3) return null;
+    const opts = shuffle([right, ...wrong]);
+    return {type:'cause', ev:e, prompt:`下列哪件事是「${e.title}」（${yLabel(e)}）的直接前因？`, opts:opts.map(o => o.title), ans:opts.indexOf(right),
+      exp:`「${right.title}」（${yRange(right)}）→「${e.title}」。${e.bg}`};
+  },
   same(pool){
     for (let t = 0; t < 30; t++) {
       const e = pick(pool);
@@ -403,7 +440,7 @@ const QGEN = {
 function startQuiz(){
   const pool = quizPool();
   if (pool.length < 4) { toast('收藏的事件少于 4 条，先多收藏一些'); return; }
-  const types = shuffle(['order','order','order','year','year','year','person','person','same','same']);
+  const types = shuffle(['order','order','year','year','person','person','same','same','cause','cause']);
   const qs = [];
   for (const t of types) { const q = QGEN[t](pool) || QGEN.order(pool); if (q) qs.push(q); }
   S.quiz = {qs, i:0, right:0, picked:null, by:{}};
@@ -495,5 +532,120 @@ async function checkUpdate(){
     else toast('已是最新版本 v' + VERSION);
   } catch (e) { toast('当前离线，稍后再试'); }
 }
+
+/* ---------- 年份切片 ---------- */
+const SL = {min:581, max:907};
+const activeAt = (y, o) => (o.start == null || o.start <= y) && (o.end == null || y <= o.end);
+const evActive = (e, y) => e.year === y || (e.endYear && e.year < y && y <= e.endYear);
+function rulerAt(state, y){
+  const rs = D.rulers.filter(r => r.state === state && r.start <= y && y <= r.end);
+  return rs.sort((a,b) => b.start - a.start)[0];
+}
+function reignText(r, y){
+  if (!r) return '';
+  const n = y - r.start + 1;
+  return `${r.name} · ${n === 1 ? '即位之年' : (r.approx ? '约' : '') + '在位第 ' + n + ' 年'}`;
+}
+function sliceSVG(y, big){
+  const m = D.sm; if (!m) return '';
+  const ps = m.polities.filter(p => activeAt(y, p));
+  const evs = D.events.filter(e => evActive(e, y) && m.ev[e.id]);
+  let g = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${m.W} ${m.H}" class="smap${big?' big':''}">`;
+  g += `<rect class="m-sea" width="${m.W}" height="${m.H}"/><path class="m-grat" d="${m.grat}"/><path class="m-land" d="${m.base}"/>`;
+  g += ps.map(p => `<path class="sp t-${p.tone}" d="${p.d}"/>`).join('');
+  g += ps.map(p => `<text class="spl t-${p.tone}" x="${p.l[0]}" y="${p.l[1]}" text-anchor="middle">${p.name}</text>` + (p.sub ? `<text class="spl t-${p.tone} s" x="${p.sub.l[0]}" y="${p.sub.l[1]}" text-anchor="middle">${p.sub.t}</text>` : '')).join('');
+  g += m.labels.filter(l => activeAt(y, l)).map(l => `<text class="spl t-o" x="${l.l[0]}" y="${l.l[1]}" text-anchor="middle">${l.t}</text>`).join('');
+  g += m.cities.filter(c => activeAt(y, c)).map(c => `<circle class="sc${c.cap?' cap':''}" cx="${c.p[0]}" cy="${c.p[1]}" r="${c.cap?2.2:1.7}"/><text class="sct" x="${c.p[0]+(c.dx??3)}" y="${c.p[1]+(c.dy??3)}"${(c.dx??3)<0?' text-anchor="end"':''}>${c.t}</text>`).join('');
+  g += evs.map(e => { const [x, yy] = m.ev[e.id]; return `<g class="spin ${sc(e.side)}" data-ev="${e.id}"><circle class="halo" cx="${x}" cy="${yy}" r="7"/><circle cx="${x}" cy="${yy}" r="3.6"/></g>`; }).join('');
+  return g + `</svg>`;
+}
+function nearby(y){
+  const before = [...D.events].reverse().find(e => e.year < y);
+  const after = D.events.find(e => e.year > y);
+  return {before, after};
+}
+function sliceBody(y){
+  const evs = D.events.filter(e => evActive(e, y));
+  const now = evs.filter(e => e.year === y), ongoing = evs.filter(e => e.year !== y);
+  let h = `<section class="sl-sec"><h3>这一年 <small>${now.length ? now.length + ' 件大事' : '无收录大事'}</small></h3>`;
+  if (now.length) h += `<div class="sl-evs">${now.map(e => `<button class="sl-ev ${sc(e.side)}" data-ev="${e.id}"><span class="sl-side">${e.side==='cn'?'中国':(e.region||[]).map(r=>REGIONS[r]).join('、')}</span><b>${esc(e.title)}</b><span class="sl-sum">${esc(e.summary)}</span>${e.impact?`<span class="sl-imp">影响：${esc(e.impact.slice(0, 58))}…</span>`:''}</button>`).join('')}</div>`;
+  else {
+    const {before, after} = nearby(y);
+    h += `<div class="sl-near">${before ? `<button data-act="goSlice" data-v="${before.year}"><span>${y - before.year} 年前</span>${esc(before.title)}</button>` : ''}${after ? `<button data-act="goSlice" data-v="${after.year}"><span>${after.year - y} 年后</span>${esc(after.title)}</button>` : ''}</div>`;
+  }
+  if (ongoing.length) h += `<div class="sl-on"><div class="sl-lab">仍在进行</div>${ongoing.map(e => `<button class="sl-chip ${sc(e.side)}" data-ev="${e.id}">${esc(e.title)}<small>${y1(e.year)}—${y1(e.endYear)}，第 ${y - e.year + 1} 年</small></button>`).join('')}</div>`;
+  h += `</section>`;
+
+  // 此刻各地
+  const seen = new Set(), rows = [];
+  const order = ['sui','chen','tang','tujue','xitujue','tujue2','huihe','tubo','nanzhao','goguryeo','baekje','silla','bohai','japan','harsha','sasan','arab','abbas','byz','visig','andalus','lombard','franks','wfr','mfr','efr'];
+  const ps = D.sm.polities.filter(p => activeAt(y, p));
+  for (const p of ps) { if (seen.has(p.state)) continue; seen.add(p.state); rows.push(p); }
+  if (y >= 581) rows.push({state:'japan', name: y >= 701 ? '日本' : '倭国', tone:'o', desc: y < 710 ? '飞鸟时代' : y < 794 ? '奈良时代' : '平安时代'});
+  rows.sort((a,b) => order.indexOf(a.state) - order.indexOf(b.state));
+  h += `<section class="sl-sec"><h3>此刻的世界 <small>${rows.length} 个主要政权</small></h3><div class="sl-states">`;
+  h += rows.map(p => { const r = rulerAt(p.state, y); return `<div class="st-row"><i class="dot t-${p.tone}"></i><b>${p.name}</b><span>${r ? esc(reignText(r, y)) : esc(p.desc)}</span></div>`; }).join('');
+  h += `</div></section>`;
+
+  // 在世人物
+  const alive = D.people.filter(p => p.birth <= y && y <= p.death).sort((a,b) => (a.side > b.side ? 1 : a.side < b.side ? -1 : a.birth - b.birth));
+  h += `<section class="sl-sec"><h3>此刻在世 <small>${alive.length} 位人物库人物</small></h3>`;
+  h += alive.length ? `<div class="pchips">${alive.map(p => `<button class="pchip ${sc(p.side)}" data-person="${p.id}">${esc(p.name.replace(/（.*）/,''))}<small>${p.approx?'约':''}${y - p.birth} 岁</small></button>`).join('')}</div>` : `<p class="center" style="font-size:13px">人物库中暂无此时在世的人</p>`;
+  h += `</section>`;
+  return h;
+}
+function sliceHead(y){
+  const cn = D.sm.polities.filter(p => activeAt(y, p) && (p.state === 'tang' || p.state === 'sui'));
+  const r = cn.length ? rulerAt(cn[0].state, y) : null;
+  return `<div class="yr-big"><b>${y}</b><span>年</span></div><div class="yr-sub">${r ? esc(reignText(r, y)) : ''}</div>`;
+}
+function renderSlice(){
+  const y = S.year;
+  const ys = D.events.map(e => e.year);
+  const tick = D.events.map(e => `<i class="${sc(e.side)}" style="left:${(e.year - SL.min) / (SL.max - SL.min) * 100}%"></i>`).join('');
+  $('#view').innerHTML = `<div class="sl-top">
+      <div class="sl-head" id="sl-head">${sliceHead(y)}</div>
+      <div class="sl-track"><div class="sl-ticks">${tick}</div><input type="range" id="sl-range" min="${SL.min}" max="${SL.max}" value="${y}" aria-label="年份"></div>
+    </div>
+    <div class="sl-btns"><button data-act="yjump" data-v="-1" aria-label="上一个事件">‹ 上一事件</button><button data-act="ystep" data-v="-1" aria-label="前一年">−1</button><button data-act="yplay" class="play" id="sl-play">${S.playing?'暂停':'▶ 播放'}</button><button data-act="ystep" data-v="1" aria-label="后一年">+1</button><button data-act="yjump" data-v="1" aria-label="下一个事件">下一事件 ›</button></div>
+    <div class="sl-mapwrap"><div class="sl-map" id="sl-map">${sliceSVG(y)}</div><button class="sl-full" data-map="slice" aria-label="全屏查看地图">⤢</button></div>
+    <div class="sl-body" id="sl-body">${sliceBody(y)}</div>`;
+  const r = $('#sl-range');
+  r.addEventListener('input', () => { stopPlay(); setYear(+r.value, true); });
+  centerMap();
+}
+let _raf = 0;
+function setYear(y, fromRange){
+  y = Math.max(SL.min, Math.min(SL.max, y));
+  S.year = y; store.set('year', y);
+  if (S.tab !== 'slice') return;
+  cancelAnimationFrame(_raf);
+  _raf = requestAnimationFrame(() => {
+    $('#sl-head').innerHTML = sliceHead(y);
+    if (!fromRange) $('#sl-range').value = y;
+    const box = $('#sl-map'), sx = box.scrollLeft;
+    box.innerHTML = sliceSVG(y); box.scrollLeft = sx;
+    $('#sl-body').innerHTML = sliceBody(y);
+    centerMap(true);
+  });
+}
+function centerMap(smooth){
+  const box = $('#sl-map'); if (!box) return;
+  const m = D.sm, w = box.scrollWidth;
+  const pins = D.events.filter(e => e.year === S.year && m.ev[e.id]).map(e => m.ev[e.id][0]);
+  if (smooth && !pins.length) return;
+  const cx = pins.length ? (Math.min(...pins) + Math.max(...pins)) / 2 : m.W * 0.62;
+  box.scrollTo({left: cx / m.W * w - box.clientWidth / 2, behavior: smooth ? 'smooth' : 'auto'});
+}
+function startPlay(){
+  if (S.year >= SL.max) setYear(SL.min);
+  S.playing = setInterval(() => { if (S.year >= SL.max) return stopPlay(); setYear(S.year + 1); }, 320);
+  const b = $('#sl-play'); if (b) b.textContent = '暂停';
+}
+function stopPlay(){
+  if (S.playing) clearInterval(S.playing); S.playing = null;
+  const b = $('#sl-play'); if (b) b.textContent = '▶ 播放';
+}
+
 
 boot();
