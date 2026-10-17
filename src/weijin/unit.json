@@ -811,7 +811,8 @@
 "W-395-split",
 "W-410-rome-sack",
 "W-451-attila",
-"W-476-wrome"
+"W-476-wrome",
+"W-325-nicaea"
 ]
 },
 {
@@ -1516,6 +1517,14 @@
 "梁武帝提倡僧人素食，此后汉传佛教的僧人普遍吃素，这在其他地区的佛教中并不普遍。",
 "北魏《洛阳伽蓝记》记载，洛阳城内外有佛寺一千三百多所。"
 ]
+},
+{
+"type": "events",
+"title": "相关事件",
+"ids": [
+"CN-366-mogao",
+"CN-401-kumarajiva"
+]
 }
 ]
 },
@@ -1619,7 +1628,8 @@
 "ids": [
 "CN-462-zuchongzhi",
 "W-499-aryabhata",
-"W-m212-archimedes"
+"W-m212-archimedes",
+"CN-263-liuhui"
 ]
 }
 ]

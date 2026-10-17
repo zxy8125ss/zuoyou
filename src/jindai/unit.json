@@ -273,7 +273,8 @@
 "ids": [
 "CN-1851-taiping",
 "CN-1861-yangwu",
-"CN-1881-xinjiang"
+"CN-1881-xinjiang",
+"CN-1884-sinofrench"
 ]
 },
 {
@@ -629,7 +630,8 @@
 "ids": [
 "CN-1900-baxin",
 "CN-1905-tongmenghui",
-"CN-1911-xinhai"
+"CN-1911-xinhai",
+"CN-1908-xianfa"
 ]
 },
 {
@@ -1130,7 +1132,8 @@
 "CN-1937-nanjing",
 "CN-1938-taierzhuang",
 "CN-1940-baituan",
-"CN-1945-shengli"
+"CN-1945-shengli",
+"CN-1935-yierjiu"
 ]
 },
 {
@@ -1413,7 +1416,8 @@
 "W-1861-uscivil",
 "W-1861-russia",
 "W-1871-germany",
-"W-1879-electric"
+"W-1879-electric",
+"W-1905-einstein"
 ]
 },
 {
@@ -1583,7 +1587,8 @@
 "W-1905-rjwar",
 "W-1930-gandhi",
 "W-1947-india",
-"W-1948-israel"
+"W-1948-israel",
+"W-1869-suez"
 ]
 },
 {
@@ -1854,7 +1859,9 @@
 "W-1929-depression",
 "W-1939-ww2",
 "W-1945-un",
-"W-1947-coldwar"
+"W-1947-coldwar",
+"W-1941-pearl",
+"W-1942-stalingrad"
 ]
 },
 {

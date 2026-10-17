@@ -88,7 +88,8 @@
 "CN-1951-xizang",
 "CN-1953-yiwu",
 "CN-1954-xianfa",
-"CN-1956-gaizao"
+"CN-1956-gaizao",
+"CN-1950-tugai"
 ]
 },
 {
@@ -396,7 +397,8 @@
 "CN-1992-nanxun",
 "CN-2001-wto",
 "CN-2010-gdp",
-"CN-2020-xiaokang"
+"CN-2020-xiaokang",
+"CN-1977-gaokao"
 ]
 },
 {
@@ -525,7 +527,8 @@
 "CN-1997-hk",
 "CN-2003-shenzhou",
 "CN-2008-olympic",
-"CN-2013-ydyl"
+"CN-2013-ydyl",
+"CN-2008-wenchuan"
 ]
 },
 {
@@ -667,7 +670,8 @@
 "W-1961-berlin",
 "W-1962-cuba",
 "W-1965-vietnam",
-"W-1969-apollo"
+"W-1969-apollo",
+"W-1957-sputnik"
 ]
 },
 {
@@ -880,7 +884,8 @@
 "W-1989-berlin",
 "W-1991-ussr",
 "W-1993-eu",
-"W-2001-911"
+"W-2001-911",
+"W-1979-iran"
 ]
 },
 {
@@ -970,7 +975,9 @@
 "W-1995-wto",
 "W-2008-crisis",
 "W-2015-paris",
-"W-2020-covid"
+"W-2020-covid",
+"W-1997-asian",
+"W-2007-smartphone"
 ]
 },
 {
