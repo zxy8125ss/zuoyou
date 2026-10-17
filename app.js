@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -10,9 +10,9 @@ const store = {
   set(k, v){ try{ localStorage.setItem('zy.' + k, JSON.stringify(v)); }catch(e){} }
 };
 
-const D = {events:[], people:[], periods:[], rulers:[], sm:null, ev:{}, pp:{}, per:{}, maps:{}, effects:{}, links:{}};
+const D = {events:[], people:[], periods:[], rulers:[], sm:null, units:[], lessons:{}, ev:{}, pp:{}, per:{}, maps:{}, effects:{}, links:{}};
 const S = {
-  tab:'slice', year: store.get('year', 755), playing:null, mode: store.get('mode','both'), regions: new Set(store.get('regions', [])), person:null,
+  tab:'learn', lesson:null, learnView:'home', done: new Set(store.get('lessons', [])), year: store.get('year', 755), playing:null, mode: store.get('mode','both'), regions: new Set(store.get('regions', [])), person:null,
   fav: new Set(store.get('fav', [])), seen: new Set(store.get('seen', [])),
   quiz:null, pFilter:{side:'all', role:'all'}, qScope:'all'
 };
@@ -33,9 +33,10 @@ function toast(msg){
 
 /* ---------- boot ---------- */
 async function boot(){
-  const [events, people, periods, rulers, sm] = await Promise.all(['events','people','periods','rulers','slice-map'].map(n => fetch(`data/${n}.json`).then(r => r.json())));
+  const [events, people, periods, rulers, sm, units, images] = await Promise.all(['events','people','periods','rulers','slice-map','units','images'].map(n => fetch(`data/${n}.json`).then(r => r.json())));
   events.sort((a,b) => a.year - b.year || (a.side < b.side ? -1 : 1));
-  Object.assign(D, {events, people, periods, rulers, sm});
+  Object.assign(D, {events, people, periods, rulers, sm, units, images});
+  units.forEach(u => u.lessons.forEach((l, i) => { l.unit = u.id; l.no = i + 1; D.lessons[l.id] = l; }));
   for (const e of events) {
     (e.causes || []).forEach(c => (D.effects[c] = D.effects[c] || []).push(e.id));
     (e.links || []).forEach(l => {
@@ -61,7 +62,7 @@ async function boot(){
 function bindChrome(){
   $('#tabbar').addEventListener('click', e => {
     const b = e.target.closest('button[data-tab]'); if (!b) return;
-    stopPlay(); S.tab = b.dataset.tab; render(); window.scrollTo(0,0);
+    stopPlay(); if (b.dataset.tab === 'learn' && S.tab === 'learn') { S.lesson = null; S.learnView = 'home'; } S.tab = b.dataset.tab; render(); window.scrollTo(0,0);
   });
   $('#sheet').addEventListener('click', e => { if (e.target.hasAttribute('data-close')) closeSheet(); });
   $('#btn-search').addEventListener('click', openSearch);
@@ -80,8 +81,18 @@ function delegated(e){
   if (t.dataset.person) { openPerson(t.dataset.person); return; }
   if (t.dataset.map) { t.dataset.map === 'slice' ? showMap(sliceSVG(S.year, true), S.year + '年的世界（示意）') : openMap(t.dataset.map, t.dataset.title); return; }
   const a = t.dataset.act, v = t.dataset.v;
-  const acts = {
+  var acts = {
     mode(){ switchMode(v); },
+    lesson(){ S.lesson = v; S.learnView = 'lesson'; render(); window.scrollTo(0,0); },
+    learnHome(){ S.lesson = null; S.learnView = 'home'; S.quiz = null; render(); window.scrollTo(0,0); },
+    learnQuiz(){ S.learnView = 'quiz'; S.quiz = null; render(); window.scrollTo(0,0); },
+    lessonDone(){ S.done.add(v); store.set('lessons', [...S.done]); const ids = Object.keys(D.lessons); const nx = ids[ids.indexOf(v) + 1]; toast('已完成本课'); if (nx) { S.lesson = nx; render(); window.scrollTo(0,0); } else acts.learnHome(); },
+    reveal(){ const box = t.closest('.mod'); box.querySelector('.ans').hidden = false; t.remove(); },
+    plain(){ const p = t.closest('.mod').querySelector('.plain'); p.hidden = !p.hidden; t.textContent = p.hidden ? '看白话' : '收起白话'; },
+    step(){ const box = t.closest('.mod'); setStep(box, +v); },
+    rtab(){ const box = t.closest('.mod'); box.querySelectorAll('.rtab').forEach(b => b.classList.toggle('on', b === t)); box.querySelectorAll('.rt').forEach(p => p.classList.toggle('dim', v !== 'all' && p.dataset.r !== v)); box.querySelectorAll('.rnote').forEach(p => p.hidden = p.dataset.r !== v); },
+    replay(){ const svg = t.closest('.mod').querySelector('svg'); svg.classList.remove('go'); void svg.getBoundingClientRect(); svg.classList.add('go'); },
+    lq(){ const [qi, k] = v.split(':').map(Number); const box = t.closest('.lq'); if (box.dataset.done) return; box.dataset.done = 1; const ans = +box.dataset.ans; box.querySelectorAll('.q-o').forEach((b, i) => { if (i === ans) b.classList.add('right'); else if (i === k) b.classList.add('wrong'); b.disabled = true; }); box.querySelector('.q-fb').hidden = false; box.querySelector('.q-fb b').textContent = k === ans ? '答对了。' : '答错了。'; box.querySelector('.q-fb b').className = k === ans ? 'ok' : 'no'; },
     ystep(){ stopPlay(); setYear(S.year + +v); },
     yjump(){ stopPlay(); const ys = [...new Set(D.events.map(e => e.year))]; const y = +v > 0 ? ys.find(y => y > S.year) : [...ys].reverse().find(y => y < S.year); if (y != null) setYear(y); },
     yplay(){ S.playing ? stopPlay() : startPlay(); },
@@ -100,7 +111,7 @@ function delegated(e){
     qans(){ answerQuiz(+v); },
     qnext(){ S.quiz.i++; S.quiz.picked = null; renderQuiz(); window.scrollTo(0,0); },
     qquit(){ S.quiz = null; renderQuiz(); },
-    reset(){ if (confirm('清除收藏、浏览进度和自测记录？')) { ['fav','seen','qstat','qhist'].forEach(k => store.set(k, k==='qstat'?{}:[])); S.fav.clear(); S.seen.clear(); renderMe(); toast('已清除'); } },
+    reset(){ if (confirm('清除收藏、浏览进度和自测记录？')) { ['fav','seen','qstat','qhist','lessons'].forEach(k => store.set(k, k==='qstat'?{}:[])); S.fav.clear(); S.seen.clear(); S.done.clear(); renderMe(); toast('已清除'); } },
     update(){ checkUpdate(); }
   };
   if (acts[a]) acts[a]();
@@ -108,7 +119,7 @@ function delegated(e){
 
 function render(){
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
-  ({slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, me:renderMe})[S.tab]();
+  ({learn:renderLearn, slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, me:renderMe})[S.tab]();
 }
 
 /* ---------- timeline ---------- */
@@ -255,6 +266,7 @@ function openEvent(id){
     <h2 class="s-title">${esc(e.title)}</h2>
     <div class="s-when">${yRange(e)}${e.place ? ' · ' + esc(e.place) : ''}</div>
     <p class="s-sum">${esc(e.summary)}</p>`;
+  if (D.images._ev && D.images._ev[id]) h += `<div class="s-photo">${imgHTML(D.images._ev[id])}</div>`;
   if (e.bg) h += `<div class="s-block"><h4>背景</h4><p>${esc(e.bg)}</p></div><div class="s-block"><h4>经过</h4><p>${esc(e.proc)}</p></div><div class="s-block"><h4>影响</h4><p>${esc(e.impact)}</p></div>`;
   else h += `<p class="s-detail">${esc(e.detail)}</p>`;
   if (e.quote) h += `<figure class="s-quote ${sc(e.side)}"><blockquote>${esc(e.quote.t)}</blockquote><figcaption>${esc(e.quote.src)}</figcaption></figure>`;
@@ -505,7 +517,7 @@ function renderMe(){
     <div class="stat-grid" style="margin-bottom:12px">
       <div class="stat"><b>${seenN}<small style="font-size:13px;color:var(--muted)"> / ${ready.length}</small></b><span>已读事件</span></div>
       <div class="stat"><b>${tot[1] ? Math.round(tot[0] / tot[1] * 100) + '%' : '—'}</b><span>自测正确率</span></div>
-      <div class="stat"><b>${favE.length + favP.length}</b><span>收藏</span></div></div>
+      <div class="stat"><b>${S.done.size}<small style="font-size:13px;color:var(--muted)"> / ${Object.keys(D.lessons).length}</small></b><span>已学课程</span></div></div>
     <div class="card"><h3>学习进度</h3>`;
   for (const p of D.periods) {
     if (!p.ready) { h += `<div class="prow na"><span class="pn">${p.name}</span><div class="pbar"></div><span class="pv">待补齐</span></div>`; continue; }
@@ -531,6 +543,118 @@ async function checkUpdate(){
     if (r.version !== VERSION) { toast('发现新版本，正在更新…'); setTimeout(() => location.reload(), 800); }
     else toast('已是最新版本 v' + VERSION);
   } catch (e) { toast('当前离线，稍后再试'); }
+}
+
+/* ---------- 学习：单元与课 ---------- */
+const MODNAME = {img:'', article:'知识篇章', steps:'时间线', box:'你知道吗', poems:'诗文', points:'要点', route:'路线图', source:'史料研读', events:'相关事件', quiz:'小测', compare:'对比', chart:'数据', map:'地图', think:'思考', cause:'因果', flow:'流程图', table:'对照表', phases:'地图演变', exchange:'关系图'};
+const toneCls = t => t === 'cn' ? 'cn' : t === 'w' ? 'w' : 'o';
+function geoBase(g){
+  return `<rect class="m-sea" width="${g.W}" height="${g.H}"/><path class="m-grat" d="${g.grat}"/><path class="m-land" d="${g.land}"/>`;
+}
+function layerSVG(L){
+  return L.polities.map(p => `<path class="sp t-${p.tone}" d="${p.d}"/>`).join('') +
+    L.polities.map(p => `<text class="spl t-${p.tone}" x="${p.l[0]}" y="${p.l[1]}" text-anchor="middle">${p.name}</text>`).join('') +
+    L.labels.map(l => `<text class="spl t-o" x="${l.l[0]}" y="${l.l[1]}" text-anchor="middle">${l.t}</text>`).join('');
+}
+function marksSVG(g){
+  return (g.marks || []).map(([x, y, t]) => `<circle class="sc" cx="${x}" cy="${y}" r="3"/><text class="lct" x="${x + 5}" y="${y + 4}">${t}</text>`).join('');
+}
+function routesSVG(g, routes){
+  return (g.routes || []).map((r, i) => `<g class="rt t-${toneCls(r.tone)}" data-r="${i}"><path class="rl" d="${r.d}" pathLength="1" style="animation-delay:${i * .5}s"/><circle class="re" cx="${r.end[0]}" cy="${r.end[1]}" r="4.5" style="animation-delay:${i * .5 + 1.4}s"/></g>`).join('');
+}
+function modHTML(m, li, mi){
+  const key = `${li}-${mi}`;
+  const k = MODNAME[m.type] || '', tt = (m.title || '').replace(/^(史料研读|本课要点)[：:]?/, '');
+  const head = `${k && !tt.includes(k) ? `<div class="mod-k">${k}</div>` : ''}${tt ? `<h3 class="mod-t">${esc(tt)}</h3>` : `<h3 class="mod-t">${k}</h3>`}`;
+  const g = m.geo;
+  switch (m.type) {
+  case 'points': return `${head}<ul class="pts">${m.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  case 'route': {
+    let h = head + (m.desc ? `<p class="mod-d">${esc(m.desc)}</p>` : '');
+    if (m.tabs) h += `<div class="chips rtabs"><button class="chip rtab on" data-act="rtab" data-v="all">全部</button>${m.routes.map((r, i) => `<button class="chip rtab" data-act="rtab" data-v="${i}">${esc(r.name.replace(/（.*）/, ''))}</button>`).join('')}</div>`;
+    h += `<div class="lmapw"><svg viewBox="0 0 ${g.W} ${g.H}" class="lmap go">${geoBase(g)}${routesSVG(g)}${marksSVG(g)}</svg><button class="replay" data-act="replay" aria-label="重播">↻</button></div>`;
+    h += `<div class="legend">${m.routes.map((r, i) => `<span class="lg t-${toneCls(r.tone)}"><i></i>${esc(r.name)}</span>`).join('')}</div>`;
+    h += m.routes.map((r, i) => r.note ? `<p class="rnote" data-r="${i}" hidden>${esc(r.note)}</p>` : '').join('');
+    return h;
+  }
+  case 'map': return head + `<p class="mod-d">${esc(m.desc)}</p><div class="lmapw"><svg viewBox="0 0 ${g.W} ${g.H}" class="lmap">${geoBase(g)}${layerSVG(g.layers[0])}${marksSVG(g)}</svg></div>` +
+      `<div class="tbl"><table><tbody>${m.table.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join('')}</tbody></table></div>`;
+  case 'phases': return head + `<div class="phase-btns">${m.steps.map((s, i) => `<button class="chip ${i ? '' : 'on'}" data-act="step" data-v="${i}">${s[0]}</button>`).join('')}</div>` +
+      `<div class="lmapw"><svg viewBox="0 0 ${g.W} ${g.H}" class="lmap">${geoBase(g)}${g.layers.map((L, i) => `<g class="ly" data-i="${i}" ${i ? 'style="display:none"' : ''}>${layerSVG(L)}</g>`).join('')}</svg></div>` +
+      `<p class="cap">${m.steps.map((s, i) => `<span data-i="${i}" ${i ? 'hidden' : ''}>${esc(s[1])}</span>`).join('')}</p>`;
+  case 'chart': {
+    const max = Math.max(...m.data.map(d => d[2])), W = 340, H = 180, bw = W / m.data.length;
+    let svg = `<svg viewBox="0 0 ${W} ${H + 40}" class="chart">`;
+    m.data.forEach(([x, lab, v], i) => {
+      const h = v / max * H, cx = i * bw + bw / 2;
+      svg += `<rect x="${cx - bw * .3}" y="${H - h + 16}" width="${bw * .6}" height="${h}" rx="4" class="bar${v === max ? ' top' : ''}"/>` +
+        `<text x="${cx}" y="${H - h + 10}" text-anchor="middle" class="bv">${v}</text>` +
+        `<text x="${cx}" y="${H + 30}" text-anchor="middle" class="bx">${x}</text><text x="${cx}" y="${H + 42}" text-anchor="middle" class="bl">${lab}</text>`;
+    });
+    svg += `</svg>`;
+    return head + `<div class="chart-u">单位：${esc(m.unit)}</div>${svg}<p class="mod-note">${esc(m.note)}</p><p class="mod-src">资料：${esc(m.src)}</p>`;
+  }
+  case 'compare': case 'table': {
+    const cols = m.type === 'compare' ? ['', ...m.cols] : m.cols;
+    return head + `<div class="tbl"><table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${m.rows.map(r => `<tr>${r.map((c, i) => i ? `<td>${esc(c)}</td>` : `<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</tbody></table></div>` + (m.note ? `<p class="mod-note">${esc(m.note)}</p>` : '');
+  }
+  case 'flow': return head + `<div class="flow">${m.steps.map(([n, d], i) => `${i ? '<div class="fa">↓</div>' : ''}<div class="fs${i === 2 ? ' key' : ''}"><b>${n}</b><span>${d}</span></div>`).join('')}<div class="fa">↓</div><div class="ftail">${m.tail.map(t => `<span>${t}</span>`).join('')}</div></div><p class="mod-note">${esc(m.note)}</p>`;
+  case 'cause': return head + `<div class="cz"><div class="cz-h">原因</div><ul>${m.causes.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div><div class="fa">↓</div><div class="cz-e">${esc(m.event)}</div><div class="fa">↓</div><div class="cz eff"><div class="cz-h">影响</div><ul>${m.effects.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>`;
+  case 'exchange': return head + `<div class="xc"><div class="xn">${esc(m.a)}</div><div class="xm"><div class="xr"><span class="xl">→ 给予</span>${m.ab.map(x => `<p>${esc(x)}</p>`).join('')}</div><div class="xr back"><span class="xl">← 回报</span>${m.ba.map(x => `<p>${esc(x)}</p>`).join('')}</div></div><div class="xn">${esc(m.b)}</div></div><p class="mod-note">${esc(m.note)}</p>`;
+  case 'source': case 'think': {
+    const mine = store.get('note.' + key, '');
+    let h = head;
+    if (m.type === 'source') h += `<figure class="s-quote cn"><blockquote>${esc(m.text)}</blockquote><figcaption>${esc(m.src)}</figcaption></figure><button class="link" data-act="plain">看白话</button><p class="plain" hidden>${esc(m.plain)}</p>`;
+    h += `<p class="ask">${esc(m.q)}</p><textarea class="mine" data-key="${key}" placeholder="先写下你的看法（只保存在本机）" rows="3">${esc(mine)}</textarea>`;
+    h += `<button class="btn reveal-btn" data-act="reveal">看分析</button><div class="ans" hidden><b>参考分析</b><p>${esc(m.a)}</p>${m.src && m.type === 'think' ? `<p class="mod-src">${esc(m.src)}</p>` : ''}</div>`;
+    return h;
+  }
+  case 'img': return imgHTML(m.key);
+  case 'article': return head + m.sections.map(s => `<div class="art">${s.h ? `<h4>${esc(s.h)}</h4>` : ''}${s.p.map(p => `<p>${esc(p)}</p>`).join('')}${s.img ? imgHTML(s.img, true) : ''}${s.quote ? `<figure class="s-quote cn"><blockquote>${esc(s.quote.t)}</blockquote><figcaption>${esc(s.quote.src)}</figcaption></figure>` : ''}</div>`).join('');
+  case 'steps': return head + `<ol class="tsteps">${m.items.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>` + (m.src ? `<p class="mod-src">${esc(m.src)}</p>` : '');
+  case 'box': return head + `<ul class="pts">${m.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  case 'poems': return head + m.items.map(p => `<div class="poem"><blockquote>${esc(p.t)}</blockquote><cite>${esc(p.src)}</cite><p>${esc(p.tells)}</p></div>`).join('');
+  case 'events': return head + `<div class="same">${m.ids.map(id => D.ev[id]).filter(Boolean).map(o => evRow(o)).join('')}</div>`;
+  case 'quiz': return `<div class="mod-k">本课小测</div>` + m.items.map((q, qi) => `<div class="lq" data-ans="${q.ans}"><p class="q-p sm">${qi + 1}. ${esc(q.q)}</p><div class="q-opts">${q.opts.map((o, k) => `<button class="q-o" data-act="lq" data-v="${qi}:${k}">${esc(o)}</button>`).join('')}</div><div class="q-fb" hidden><b></b>${esc(q.exp)}</div></div>`).join('');
+  }
+  return '';
+}
+function imgHTML(key, inline){
+  const im = D.images[key]; if (!im) return '';
+  return `<figure class="photo${inline ? ' in' : ''}"><img src="${im.file}" alt="${esc(im.cap)}" loading="lazy" decoding="async" width="${im.w || ''}" height="${im.h || ''}"><figcaption>${esc(im.cap)}<small><a href="${im.page}" target="_blank" rel="noopener">${esc(im.credit)}</a></small></figcaption></figure>`;
+}
+function setStep(box, i){
+  box.querySelectorAll('.phase-btns .chip').forEach((b, k) => b.classList.toggle('on', k === i));
+  box.querySelectorAll('.ly').forEach((g, k) => g.style.display = k === i ? '' : 'none');
+  box.querySelectorAll('.cap span').forEach((s, k) => s.hidden = k !== i);
+}
+function renderLearn(){
+  if (S.learnView === 'quiz') { renderQuiz(); $('#view').insertAdjacentHTML('afterbegin', `<div class="crumb"><button data-act="learnHome">‹ 返回单元</button></div>`); return; }
+  const u = D.units[0];
+  if (S.learnView === 'lesson' && D.lessons[S.lesson]) {
+    const l = D.lessons[S.lesson], ids = Object.keys(D.lessons), i = ids.indexOf(l.id);
+    const tag = l.special ? '专题' : `第 ${l.no} 课`;
+    let h = `<div class="crumb"><button data-act="learnHome">‹ ${esc(u.title.split('：')[0])}单元</button><span>${i + 1} / ${ids.length}</span></div><div class="page lesson">
+      <div class="ls-tag ${l.side === 'cn' ? 'cn' : l.side === 'world' ? 'w' : ''}">${tag} · ${l.side === 'cn' ? '中国' : l.side === 'world' ? '世界' : '中外'}</div><h2 class="page-h ls-h">${esc(l.title)}</h2><p class="ls-lead">${esc(l.lead)}</p>`;
+    h += l.modules.map((m, mi) => { const x = modHTML(m, l.id, mi); return x ? `<section class="mod card m-${m.type}">${x}</section>` : ''; }).join('');
+    h += `<div class="s-actions"><button class="btn" data-act="learnHome">返回单元</button><button class="btn pri" data-act="lessonDone" data-v="${l.id}">${S.done.has(l.id) ? '已学完 · 下一课' : '学完这一课 ✓'}</button></div></div>`;
+    $('#view').innerHTML = h;
+    document.querySelectorAll('textarea.mine').forEach(ta => ta.addEventListener('input', () => store.set('note.' + ta.dataset.key, ta.value)));
+    return;
+  }
+  const L = u.lessons, n = L.filter(l => S.done.has(l.id)).length;
+  const group = (title, arr) => arr.length ? `<div class="lg-h">${title}</div>` + arr.map(l => {
+    const kinds = [...new Set(l.modules.map(m => MODNAME[m.type]).filter(k => k && !['要点','相关事件','小测'].includes(k)))].slice(0, 3);
+    return `<button class="lcard ${S.done.has(l.id) ? 'done' : ''}" data-act="lesson" data-v="${l.id}"><span class="lc-no ${l.side === 'cn' ? 'cn' : l.side === 'world' ? 'w' : ''}">${l.special ? '专' : l.no}</span><span class="lc-m"><b>${esc(l.title)}</b><small>${kinds.join(' · ')}</small></span><span class="lc-ok">${S.done.has(l.id) ? '✓' : ''}</span></button>`;
+  }).join('') : '';
+  let h = `<div class="page"><div class="unit card"><div class="u-years">${u.years}</div><h2 class="u-t">${esc(u.title)}</h2><p class="u-lead">${esc(u.lead)}</p><div class="u-prog"><div class="pbar"><i style="width:${n / L.length * 100}%"></i></div><span>已学 ${n} / ${L.length}</span></div><p class="u-ref">${esc(u.ref)}</p></div>`;
+  h += group('中国史', L.filter(l => l.side === 'cn' && !l.special));
+  h += group('中外交流', L.filter(l => l.side === 'both' && !l.special));
+  h += group('世界史', L.filter(l => l.side === 'world' && !l.special));
+  h += group('专题篇章', L.filter(l => l.special));
+  h += `<div class="lg-h">练习</div><button class="lcard" data-act="learnQuiz"><span class="lc-no">测</span><span class="lc-m"><b>综合自测 10 题</b><small>谁先谁后 · 年份 · 人物 · 同时代 · 前因后果</small></span><span class="lc-ok">›</span></button>`;
+  h += `<div class="todo">其余 9 个时期的单元将在下一阶段补齐。</div></div>`;
+  $('#view').innerHTML = h;
 }
 
 /* ---------- 年份切片 ---------- */
