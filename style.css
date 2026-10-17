@@ -378,7 +378,7 @@ svg text{font-family:var(--sans);paint-order:stroke;stroke:var(--map-halo);strok
 .lmap .spl.t-cn,.lmap .spl.t-cn2{fill:var(--cn)} .lmap .spl.t-w{fill:var(--w)} .lmap .spl.t-o{fill:var(--ink2);font-size:12.5px}
 .lmap .sc{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
 .lmap .lct{font-size:13px;fill:var(--ink);font-weight:600}
-.rt .rl{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
+.rt .rl{fill:none;stroke-width:3.5px;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
 .rt .re{stroke:var(--paper);stroke-width:1.5}
 .rt.t-cn .rl{stroke:var(--cn)} .rt.t-cn .re{fill:var(--cn)}
 .rt.t-w .rl{stroke:var(--w)} .rt.t-w .re{fill:var(--w)}
