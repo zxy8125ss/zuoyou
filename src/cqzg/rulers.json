@@ -1,0 +1,401 @@
+[
+{
+"state": "zhou",
+"name": "周平王",
+"start": -770,
+"end": -720,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周桓王",
+"start": -719,
+"end": -697,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周庄王",
+"start": -696,
+"end": -682,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周釐王",
+"start": -681,
+"end": -677,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周惠王",
+"start": -676,
+"end": -652,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周襄王",
+"start": -651,
+"end": -619,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周顷王",
+"start": -618,
+"end": -613,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周匡王",
+"start": -612,
+"end": -607,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周定王",
+"start": -606,
+"end": -586,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周简王",
+"start": -585,
+"end": -572,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周灵王",
+"start": -571,
+"end": -545,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周景王",
+"start": -544,
+"end": -520,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周敬王",
+"start": -519,
+"end": -476,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周元王",
+"start": -475,
+"end": -469,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周贞定王",
+"start": -468,
+"end": -441,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周考王",
+"start": -440,
+"end": -426,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周威烈王",
+"start": -425,
+"end": -402,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周安王",
+"start": -401,
+"end": -376,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周烈王",
+"start": -375,
+"end": -369,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周显王",
+"start": -368,
+"end": -321,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周慎靓王",
+"start": -320,
+"end": -315,
+"head": 1
+},
+{
+"state": "zhou",
+"name": "周赧王",
+"start": -314,
+"end": -256,
+"head": 1
+},
+{
+"state": "qin",
+"name": "秦昭襄王",
+"start": -255,
+"end": -251,
+"head": 1
+},
+{
+"state": "qin",
+"name": "秦孝文王",
+"start": -250,
+"end": -250,
+"head": 1
+},
+{
+"state": "qin",
+"name": "秦庄襄王",
+"start": -249,
+"end": -247,
+"head": 1
+},
+{
+"state": "qin",
+"name": "秦王嬴政",
+"start": -246,
+"end": -221,
+"head": 1
+},
+{
+"state": "qi",
+"name": "齐桓公",
+"start": -685,
+"end": -643
+},
+{
+"state": "jin",
+"name": "晋文公",
+"start": -636,
+"end": -628
+},
+{
+"state": "qin",
+"name": "秦穆公",
+"start": -659,
+"end": -621
+},
+{
+"state": "chu",
+"name": "楚庄王",
+"start": -613,
+"end": -591
+},
+{
+"state": "wu",
+"name": "吴王阖闾",
+"start": -514,
+"end": -496
+},
+{
+"state": "wu",
+"name": "吴王夫差",
+"start": -495,
+"end": -473
+},
+{
+"state": "yue",
+"name": "越王勾践",
+"start": -496,
+"end": -465
+},
+{
+"state": "wei",
+"name": "魏文侯",
+"start": -445,
+"end": -396
+},
+{
+"state": "qin",
+"name": "秦孝公",
+"start": -361,
+"end": -338
+},
+{
+"state": "qi",
+"name": "齐威王",
+"start": -356,
+"end": -320
+},
+{
+"state": "qi",
+"name": "齐宣王",
+"start": -319,
+"end": -301
+},
+{
+"state": "zhao",
+"name": "赵武灵王",
+"start": -325,
+"end": -299
+},
+{
+"state": "yan",
+"name": "燕昭王",
+"start": -311,
+"end": -279
+},
+{
+"state": "chu",
+"name": "楚怀王",
+"start": -328,
+"end": -299
+},
+{
+"state": "qin",
+"name": "秦昭襄王",
+"start": -306,
+"end": -256
+},
+{
+"state": "persia",
+"name": "居鲁士二世",
+"start": -559,
+"end": -530
+},
+{
+"state": "persia",
+"name": "冈比西斯二世",
+"start": -530,
+"end": -522
+},
+{
+"state": "persia",
+"name": "大流士一世",
+"start": -522,
+"end": -486
+},
+{
+"state": "persia",
+"name": "薛西斯一世",
+"start": -486,
+"end": -465
+},
+{
+"state": "persia",
+"name": "阿尔塔薛西斯一世",
+"start": -465,
+"end": -424
+},
+{
+"state": "persia",
+"name": "大流士三世",
+"start": -336,
+"end": -330
+},
+{
+"state": "macedon",
+"name": "腓力二世",
+"start": -359,
+"end": -336,
+"approx": true
+},
+{
+"state": "macedon",
+"name": "亚历山大",
+"start": -336,
+"end": -323
+},
+{
+"state": "seleucid",
+"name": "塞琉古一世",
+"start": -305,
+"end": -281
+},
+{
+"state": "seleucid",
+"name": "安条克一世",
+"start": -281,
+"end": -261
+},
+{
+"state": "ptolemy",
+"name": "托勒密一世",
+"start": -305,
+"end": -282
+},
+{
+"state": "ptolemy",
+"name": "托勒密二世",
+"start": -284,
+"end": -246
+},
+{
+"state": "ptolemy",
+"name": "托勒密三世",
+"start": -246,
+"end": -222
+},
+{
+"state": "maurya",
+"name": "旃陀罗笈多",
+"start": -322,
+"end": -298,
+"approx": true
+},
+{
+"state": "maurya",
+"name": "宾头娑罗",
+"start": -298,
+"end": -272,
+"approx": true
+},
+{
+"state": "maurya",
+"name": "阿育王",
+"start": -268,
+"end": -232,
+"approx": true
+},
+{
+"state": "assyria",
+"name": "亚述巴尼拔",
+"start": -668,
+"end": -631,
+"approx": true
+},
+{
+"state": "babylon",
+"name": "尼布甲尼撒二世",
+"start": -605,
+"end": -562,
+"approx": true
+},
+{
+"state": "lydia",
+"name": "克洛伊索斯",
+"start": -560,
+"end": -547,
+"approx": true
+},
+{
+"state": "greek",
+"name": "伯里克利（雅典首席将军）",
+"start": -443,
+"end": -429
+}
+]

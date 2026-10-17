@@ -1,0 +1,281 @@
+[
+{
+"state": "qin",
+"name": "秦始皇",
+"start": -221,
+"end": -210,
+"head": 1
+},
+{
+"state": "qin",
+"name": "秦二世",
+"start": -209,
+"end": -207,
+"head": 1
+},
+{
+"state": "chu",
+"name": "西楚霸王项羽",
+"start": -206,
+"end": -203,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉高祖",
+"start": -202,
+"end": -195,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉惠帝",
+"start": -194,
+"end": -188,
+"head": 1
+},
+{
+"state": "han",
+"name": "吕后临朝",
+"start": -187,
+"end": -180,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉文帝",
+"start": -179,
+"end": -157,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉景帝",
+"start": -156,
+"end": -141,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉武帝",
+"start": -140,
+"end": -87,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉昭帝",
+"start": -86,
+"end": -74,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉宣帝",
+"start": -73,
+"end": -49,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉元帝",
+"start": -48,
+"end": -33,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉成帝",
+"start": -32,
+"end": -7,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉哀帝",
+"start": -6,
+"end": -1,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉平帝（王莽辅政）",
+"start": 1,
+"end": 5,
+"head": 1
+},
+{
+"state": "han",
+"name": "孺子婴（王莽摄政）",
+"start": 6,
+"end": 8,
+"head": 1
+},
+{
+"state": "xin",
+"name": "新·王莽",
+"start": 9,
+"end": 23,
+"head": 1
+},
+{
+"state": "han",
+"name": "更始帝",
+"start": 23,
+"end": 24,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉光武帝",
+"start": 25,
+"end": 57,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉明帝",
+"start": 58,
+"end": 75,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉章帝",
+"start": 76,
+"end": 88,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉和帝",
+"start": 89,
+"end": 105,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉安帝",
+"start": 106,
+"end": 125,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉顺帝",
+"start": 126,
+"end": 144,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉桓帝",
+"start": 146,
+"end": 167,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉灵帝",
+"start": 168,
+"end": 189,
+"head": 1
+},
+{
+"state": "han",
+"name": "汉献帝",
+"start": 190,
+"end": 220,
+"head": 1
+},
+{
+"state": "xiongnu",
+"name": "冒顿单于",
+"start": -209,
+"end": -174
+},
+{
+"state": "xiongnu",
+"name": "呼韩邪单于",
+"start": -58,
+"end": -31
+},
+{
+"state": "rome",
+"name": "罗马共和国（执政官）",
+"start": -221,
+"end": -28
+},
+{
+"state": "rome",
+"name": "奥古斯都",
+"start": -27,
+"end": 14
+},
+{
+"state": "rome",
+"name": "提比略",
+"start": 14,
+"end": 37
+},
+{
+"state": "rome",
+"name": "尼禄",
+"start": 54,
+"end": 68
+},
+{
+"state": "rome",
+"name": "韦斯巴芗",
+"start": 69,
+"end": 79
+},
+{
+"state": "rome",
+"name": "图拉真",
+"start": 98,
+"end": 117
+},
+{
+"state": "rome",
+"name": "哈德良",
+"start": 117,
+"end": 138
+},
+{
+"state": "rome",
+"name": "马可·奥勒留",
+"start": 161,
+"end": 180
+},
+{
+"state": "rome",
+"name": "塞维鲁王朝",
+"start": 193,
+"end": 220
+},
+{
+"state": "parthia",
+"name": "米特拉达梯一世",
+"start": -171,
+"end": -132
+},
+{
+"state": "maurya",
+"name": "孔雀王朝晚期",
+"start": -221,
+"end": -185
+},
+{
+"state": "kushan",
+"name": "迦腻色伽",
+"start": 127,
+"end": 150
+},
+{
+"state": "egypt",
+"name": "克利奥帕特拉七世",
+"start": -51,
+"end": -30
+}
+]

@@ -1,0 +1,17 @@
+[
+{"state":"egypt","name":"纳尔迈","start":-3100,"end":-3070,"approx":true},
+{"state":"egypt","name":"左塞尔","start":-2670,"end":-2651,"approx":true},
+{"state":"egypt","name":"斯尼夫鲁","start":-2613,"end":-2590,"approx":true},
+{"state":"egypt","name":"胡夫","start":-2589,"end":-2566,"approx":true},
+{"state":"egypt","name":"哈夫拉","start":-2558,"end":-2532,"approx":true},
+{"state":"egypt","name":"佩皮二世","start":-2278,"end":-2184,"approx":true},
+{"state":"sumer","name":"拉格什 · 乌鲁卡基那","start":-2350,"end":-2340,"approx":true},
+{"state":"sumer","name":"乌玛 · 卢伽尔扎格西","start":-2358,"end":-2335,"approx":true},
+{"state":"akkad","name":"萨尔贡","start":-2334,"end":-2279,"approx":true},
+{"state":"akkad","name":"里姆什","start":-2278,"end":-2270,"approx":true},
+{"state":"akkad","name":"玛尼什图苏","start":-2269,"end":-2255,"approx":true},
+{"state":"akkad","name":"纳拉姆辛","start":-2254,"end":-2218,"approx":true},
+{"state":"akkad","name":"沙尔卡利沙瑞","start":-2217,"end":-2193,"approx":true},
+{"state":"ur3","name":"乌尔纳姆","start":-2112,"end":-2095,"approx":true},
+{"state":"ur3","name":"舒尔吉","start":-2094,"end":-2047,"approx":true}
+]

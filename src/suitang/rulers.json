@@ -1,0 +1,376 @@
+[
+{
+"state": "chen",
+"name": "陈后主",
+"start": 582,
+"end": 589
+},
+{
+"state": "sui",
+"name": "隋文帝",
+"start": 581,
+"end": 604
+},
+{
+"state": "sui",
+"name": "隋炀帝",
+"start": 604,
+"end": 617
+},
+{
+"state": "tang",
+"name": "唐高祖",
+"start": 618,
+"end": 626
+},
+{
+"state": "tang",
+"name": "唐太宗",
+"start": 626,
+"end": 649
+},
+{
+"state": "tang",
+"name": "唐高宗",
+"start": 649,
+"end": 683
+},
+{
+"state": "tang",
+"name": "唐中宗",
+"start": 683,
+"end": 684
+},
+{
+"state": "tang",
+"name": "唐睿宗（武则天临朝）",
+"start": 684,
+"end": 690
+},
+{
+"state": "tang",
+"name": "武则天（武周）",
+"start": 690,
+"end": 705
+},
+{
+"state": "tang",
+"name": "唐中宗",
+"start": 705,
+"end": 710
+},
+{
+"state": "tang",
+"name": "唐睿宗",
+"start": 710,
+"end": 712
+},
+{
+"state": "tang",
+"name": "唐玄宗",
+"start": 712,
+"end": 756
+},
+{
+"state": "tang",
+"name": "唐肃宗",
+"start": 756,
+"end": 762
+},
+{
+"state": "tang",
+"name": "唐代宗",
+"start": 762,
+"end": 779
+},
+{
+"state": "tang",
+"name": "唐德宗",
+"start": 779,
+"end": 805
+},
+{
+"state": "tang",
+"name": "唐宪宗",
+"start": 805,
+"end": 820
+},
+{
+"state": "tang",
+"name": "唐穆宗",
+"start": 820,
+"end": 824
+},
+{
+"state": "tang",
+"name": "唐敬宗",
+"start": 824,
+"end": 826
+},
+{
+"state": "tang",
+"name": "唐文宗",
+"start": 826,
+"end": 840
+},
+{
+"state": "tang",
+"name": "唐武宗",
+"start": 840,
+"end": 846
+},
+{
+"state": "tang",
+"name": "唐宣宗",
+"start": 846,
+"end": 859
+},
+{
+"state": "tang",
+"name": "唐懿宗",
+"start": 859,
+"end": 873
+},
+{
+"state": "tang",
+"name": "唐僖宗",
+"start": 873,
+"end": 888
+},
+{
+"state": "tang",
+"name": "唐昭宗",
+"start": 888,
+"end": 904
+},
+{
+"state": "tang",
+"name": "唐哀帝",
+"start": 904,
+"end": 907
+},
+{
+"state": "tubo",
+"name": "松赞干布",
+"start": 629,
+"end": 650,
+"approx": true
+},
+{
+"state": "tubo",
+"name": "赤松德赞",
+"start": 755,
+"end": 797,
+"approx": true
+},
+{
+"state": "silla",
+"name": "文武王",
+"start": 661,
+"end": 681
+},
+{
+"state": "sasan",
+"name": "库思老二世",
+"start": 590,
+"end": 628
+},
+{
+"state": "sasan",
+"name": "伊嗣俟三世",
+"start": 632,
+"end": 651
+},
+{
+"state": "byz",
+"name": "莫里斯",
+"start": 582,
+"end": 602
+},
+{
+"state": "byz",
+"name": "希拉克略",
+"start": 610,
+"end": 641
+},
+{
+"state": "byz",
+"name": "利奥三世",
+"start": 717,
+"end": 741
+},
+{
+"state": "byz",
+"name": "女皇伊琳娜",
+"start": 797,
+"end": 802
+},
+{
+"state": "byz",
+"name": "巴西尔一世",
+"start": 867,
+"end": 886
+},
+{
+"state": "byz",
+"name": "利奥六世",
+"start": 886,
+"end": 907
+},
+{
+"state": "arab",
+"name": "先知穆罕默德",
+"start": 630,
+"end": 632
+},
+{
+"state": "arab",
+"name": "哈里发艾布·伯克尔",
+"start": 632,
+"end": 634
+},
+{
+"state": "arab",
+"name": "哈里发欧麦尔",
+"start": 634,
+"end": 644
+},
+{
+"state": "arab",
+"name": "哈里发奥斯曼",
+"start": 644,
+"end": 656
+},
+{
+"state": "arab",
+"name": "哈里发阿里",
+"start": 656,
+"end": 661
+},
+{
+"state": "arab",
+"name": "穆阿维叶一世",
+"start": 661,
+"end": 680
+},
+{
+"state": "arab",
+"name": "阿卜杜勒·马利克",
+"start": 685,
+"end": 705
+},
+{
+"state": "arab",
+"name": "瓦利德一世",
+"start": 705,
+"end": 715
+},
+{
+"state": "arab",
+"name": "希沙姆",
+"start": 724,
+"end": 743
+},
+{
+"state": "abbas",
+"name": "萨法赫",
+"start": 750,
+"end": 754
+},
+{
+"state": "abbas",
+"name": "曼苏尔",
+"start": 754,
+"end": 775
+},
+{
+"state": "abbas",
+"name": "马赫迪",
+"start": 775,
+"end": 785
+},
+{
+"state": "abbas",
+"name": "哈伦·拉希德",
+"start": 786,
+"end": 809
+},
+{
+"state": "abbas",
+"name": "马蒙",
+"start": 813,
+"end": 833
+},
+{
+"state": "franks",
+"name": "宫相查理·马特（实权）",
+"start": 717,
+"end": 741
+},
+{
+"state": "franks",
+"name": "宫相丕平（实权）",
+"start": 741,
+"end": 750
+},
+{
+"state": "franks",
+"name": "丕平三世",
+"start": 751,
+"end": 768
+},
+{
+"state": "franks",
+"name": "查理曼",
+"start": 768,
+"end": 814
+},
+{
+"state": "franks",
+"name": "虔诚者路易",
+"start": 814,
+"end": 840
+},
+{
+"state": "wfr",
+"name": "秃头查理",
+"start": 843,
+"end": 877
+},
+{
+"state": "efr",
+"name": "日耳曼人路易",
+"start": 843,
+"end": 876
+},
+{
+"state": "harsha",
+"name": "戒日王",
+"start": 606,
+"end": 647
+},
+{
+"state": "japan",
+"name": "推古天皇（圣德太子摄政）",
+"start": 593,
+"end": 628
+},
+{
+"state": "japan",
+"name": "天智天皇",
+"start": 668,
+"end": 671
+},
+{
+"state": "japan",
+"name": "天武天皇",
+"start": 673,
+"end": 686
+},
+{
+"state": "japan",
+"name": "桓武天皇",
+"start": 781,
+"end": 806
+}
+]

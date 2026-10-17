@@ -464,3 +464,51 @@ svg text{font-family:var(--sans);paint-order:stroke;stroke:var(--map-halo);strok
 .photo figcaption small a{color:inherit;text-decoration:none}
 .s-photo{margin:12px -20px 0}
 .s-photo .photo figcaption{padding:8px 20px 0}
+
+/* ---------- v0.4 十个单元 ---------- */
+.hero{background:linear-gradient(135deg,var(--cn-soft),var(--w-soft))}
+.hero .u-t{color:var(--ink)}
+.units{display:grid;gap:8px}
+.ucard{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:center;width:100%;text-align:left;padding:12px 14px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)}
+.uc-i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:700;background:var(--paper2);color:var(--cn)}
+.uc-m{display:block;min-width:0}
+.uc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.uc-top b{font-family:var(--serif);font-size:17px;white-space:nowrap}
+.uc-top small{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.uc-t{display:block;font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.uc-p{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:6px}
+.uc-p small{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.uc-p .pbar{height:5px}
+.qper{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.sl-pc{padding:2px 0 6px;margin:0 -16px;padding-left:16px;padding-right:16px}
+.yr-big span:first-child:not(:last-child){font-size:15px;color:var(--ink2);margin-right:2px}
+.sl-note{margin:6px 2px 0;font-size:11.5px;color:var(--muted)}
+.smap .spin.on circle{fill-opacity:.55}
+.sl-near button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 缩略图与全屏地图 */
+.tmap .sp{stroke-width:1.2;stroke-linejoin:round}
+.tmap .sp.t-cn{fill:var(--cn);fill-opacity:.25;stroke:var(--cn)}
+.tmap .sp.t-cn2{fill:var(--cn);fill-opacity:.1;stroke:var(--cn);stroke-dasharray:4 3}
+.tmap .sp.t-w{fill:var(--w-soft);fill-opacity:.92;stroke:var(--w)}
+.tmap .sp.t-o{fill:var(--muted);fill-opacity:.15;stroke:var(--muted);stroke-dasharray:4 3}
+.tmap .spl{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:1px}
+.tmap .spl.t-cn,.tmap .spl.t-cn2{fill:var(--cn)} .tmap .spl.t-w{fill:var(--w)} .tmap .spl.t-o{fill:var(--ink2);font-size:13px}
+.tmap .sc{fill:var(--paper);stroke:var(--ink);stroke-width:1.4} .tmap .sc.cap{fill:var(--ink)}
+.tmap .sct{font-size:12px;fill:var(--ink)}
+.map-thumb .sct,.map-thumb .sc{display:none}
+.map-thumb .spl{font-size:24px} .map-thumb .spl.t-o{font-size:19px}
+/* 年表 */
+.spans{margin-top:4px}
+.sp-r{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:center;min-height:40px;padding:2px 0}
+.sp-n{font-size:13px;font-weight:600;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-n small{display:block;font-size:10.5px;font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums}
+.sp-t{position:relative;height:34px}
+.sp-g{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.sp-b{position:absolute;top:11px;height:12px;border-radius:6px}
+.sp-b.t-cn{background:var(--cn)} .sp-b.t-w{background:var(--w)} .sp-b.t-o{background:var(--muted)}
+.sp-t em{position:absolute;top:24px;font-style:normal;font-size:10px;color:var(--muted);white-space:nowrap}
+.sp-ax .sp-t{height:18px}
+.sp-ax .sp-t span{position:absolute;top:0;transform:translateX(-50%);font-size:10.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.m-people .pcards{gap:8px}
+.rnote b{color:var(--ink)}
+svg text{pointer-events:none}

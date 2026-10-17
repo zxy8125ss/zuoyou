@@ -1,0 +1,12 @@
+[
+{"id":"shanggu","name":"上古","start":-3300,"end":-2071,"world":"大河文明兴起","step":10,"rep":-2300},
+{"id":"xsz","name":"夏商西周","start":-2070,"end":-771,"world":"古埃及、两河、古印度与爱琴海","step":10,"rep":-1250},
+{"id":"cqzg","name":"春秋战国","start":-770,"end":-222,"world":"轴心时代、波斯帝国与古希腊","step":5,"rep":-400},
+{"id":"qinhan","name":"秦汉","start":-221,"end":219,"world":"罗马、帕提亚与贵霜","step":2,"rep":100},
+{"id":"weijin","name":"魏晋南北朝","start":220,"end":580,"world":"罗马衰亡与民族大迁徙","step":2,"rep":450},
+{"id":"suitang","name":"隋唐","start":581,"end":907,"world":"伊斯兰兴起与查理曼帝国","step":1,"rep":750},
+{"id":"songyuan","name":"五代宋元","start":908,"end":1367,"world":"十字军、蒙古西征与城市复兴","step":2,"rep":1260},
+{"id":"mingqing","name":"明清","start":1368,"end":1839,"world":"大航海、文艺复兴与工业革命","step":2,"rep":1700},
+{"id":"jindai","name":"近代","start":1840,"end":1948,"world":"殖民扩张与两次世界大战","step":1,"rep":1910},
+{"id":"xiandai","name":"现代","start":1949,"end":2020,"world":"冷战、去殖民化与全球化","step":1,"rep":1975}
+]
