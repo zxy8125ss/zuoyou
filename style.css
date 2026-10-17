@@ -402,7 +402,7 @@ svg text{font-family:var(--sans);paint-order:stroke;stroke:var(--map-halo);strok
 .tbl table{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.55}
 .tbl th,.tbl td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .tbl thead th{font-size:12.5px;color:var(--muted);font-weight:700}
-.tbl tbody th{white-space:nowrap;font-weight:600;color:var(--ink);padding-right:10px}
+.tbl tbody th{font-weight:600;color:var(--ink);padding-right:10px;min-width:3em;max-width:7.5em}
 .m-map .tbl{margin-top:10px}
 .chart{display:block;width:100%;height:auto}
 .chart .bar{fill:var(--cn);opacity:.55} .chart .bar.top{opacity:1}
