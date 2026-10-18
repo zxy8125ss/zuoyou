@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -703,6 +703,7 @@ function renderLesson(u, l){
   let h = `<div class="crumb"><button data-act="learnHome">‹ ${esc(p.name)}单元</button><span>${i + 1} / ${ids.length}</span></div><div class="page lesson">
     <div class="ls-tag ${sideCls(l.side)}">${tag} · ${sideTxt(l.side)}</div><h2 class="page-h ls-h">${esc(l.title)}</h2><p class="ls-lead">${esc(l.lead)}</p>`;
   h += l.modules.map((m, mi) => { const x = modHTML(m, l.id, mi, l.side); return x ? `<section class="mod card m-${m.type}">${x}</section>` : ''; }).join('');
+  h += window.Notes ? Notes.lessonBox(l) : '';
   h += `<div class="s-actions"><button class="btn" data-act="learnHome">返回单元</button><button class="btn pri" data-act="lessonDone" data-v="${l.id}">${S.done.has(l.id) ? '已学完 · 下一课' : '学完这一课 ✓'}</button></div></div>`;
   $('#view').innerHTML = h;
   document.querySelectorAll('textarea.mine').forEach(ta => ta.addEventListener('input', () => store.set('note.' + ta.dataset.key, ta.value)));

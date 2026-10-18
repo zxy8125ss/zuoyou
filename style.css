@@ -575,3 +575,21 @@ body{background-image:none}
 .nt-tag{color:var(--w)}
 .nt-attach{background:var(--w-soft);color:var(--w)}
 .nt-attach button{color:var(--w)}
+
+/* 笔记：课程框 / 汇总页 */
+.nt-lbox h3,.nt-qbox h3{margin:0 0 10px;font-size:15px}
+.nt-lbox,.nt-qbox{margin-top:18px}
+.nt-qbox{margin:12px 0 0}
+.nt-ta{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:10px 12px;font-size:16px;line-height:1.6;resize:vertical;color:var(--ink);font-family:inherit}
+.nt-ta:focus{outline:2px solid var(--w);outline-offset:0}
+.nt-btns{display:flex;gap:8px}
+.nt-btns .btn{height:40px;padding:0 18px}
+.nt-own{margin-top:12px}
+.nt-own .nt-card{margin:10px 0 0;background:var(--paper)}
+.nt-lead{margin:4px 0 12px;font-size:13px;color:var(--muted)}
+.nt-group{margin-bottom:6px}
+.nt-gh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;text-align:left;margin:14px 0 8px;padding:0 2px}
+.nt-gh b{font-size:15px;color:var(--cn);font-weight:600}
+.nt-gh span{flex:none;font-size:12.5px;color:var(--muted)}
+.nt-gh.plain b{color:var(--ink2)}
+.nt-empty{font-size:13px;padding:22px 8px;line-height:1.9}
