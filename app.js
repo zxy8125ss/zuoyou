@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -122,7 +122,9 @@ function delegated(e){
   if (acts[a]) acts[a]();
 }
 
+const TITLES = {learn:'学习', slice:'切片', timeline:'对照', people:'人物', quiz:'自测', notes:'记录', me:'我的'};
 function render(){
+  $('#page-title').textContent = TITLES[S.tab] || '';
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   ({learn:renderLearn, slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, notes:() => window.renderNotes(), me:renderMe})[S.tab]();
 }
@@ -389,7 +391,7 @@ function renderPeople(){
   if (f.role !== 'all' && !roles.includes(f.role)) f.role = 'all';
   const list = D.people.filter(p => (f.side === 'all' || p.side === f.side) && (f.role === 'all' || roleCat(p.role) === f.role) && (f.period === 'all' || p.period === f.period))
     .sort((a,b) => a.birth - b.birth);
-  let h = `<div class="page"><h2 class="page-h">人物</h2><p class="sub">共 ${D.people.length} 位 · 当前 ${list.length} 位 · 按出生年排列</p>
+  let h = `<div class="page"><p class="sub">共 ${D.people.length} 位 · 当前 ${list.length} 位 · 按出生年排列</p>
     <div class="filters">${[['all','全部'],['cn','中国'],['world','世界']].map(([k,v]) => `<button class="chip ${k==='cn'?'cn':k==='world'?'w':''} ${f.side===k?'on':''}" data-act="pside" data-v="${k}">${v}</button>`).join('')}</div>
     <div class="filters"><button class="chip ${f.period==='all'?'on':''}" data-act="pper" data-v="all">全部时期</button>${D.periods.map(p => `<button class="chip ${f.period===p.id?'on':''}" data-act="pper" data-v="${p.id}">${p.name}</button>`).join('')}</div>
     <div class="filters"><button class="chip ${f.role==='all'?'on':''}" data-act="prole" data-v="all">全部身份</button>${roles.map(r => `<button class="chip ${f.role===r?'on':''}" data-act="prole" data-v="${r}">${r}</button>`).join('')}</div>
@@ -526,7 +528,7 @@ function renderMe(){
   const tot = Object.values(st).reduce((a, [r, c]) => [a[0] + r, a[1] + c], [0, 0]);
   const favE = D.events.filter(e => S.fav.has(e.id));
   const favP = D.people.filter(p => S.fav.has('P:' + p.id));
-  let h = `<div class="page"><h2 class="page-h">我的</h2>
+  let h = `<div class="page">
     <div class="stat-grid" style="margin-bottom:12px">
       <div class="stat"><b>${seenN}<small style="font-size:13px;color:var(--muted)"> / ${ready.length}</small></b><span>已读事件</span></div>
       <div class="stat"><b>${tot[1] ? Math.round(tot[0] / tot[1] * 100) + '%' : '—'}</b><span>自测正确率</span></div>

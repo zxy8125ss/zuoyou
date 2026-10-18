@@ -1,10 +1,10 @@
 :root{
-  --paper:#F5EEDC; --paper2:#EDE3CB; --card:#FFFBF2; --ink:#2B2620; --ink2:#5A5146; --muted:#8A7F6E;
-  --line:#DCCFB4; --grid:rgba(120,100,60,.07);
-  --cn:#9E2A23; --cn-soft:#F4E0D9; --w:#1F4E8C; --w-soft:#DFE8F3;
+  --paper:#F3F0E8; --paper2:#E9E5DA; --card:#FFFFFF; --ink:#1B2420; --ink2:#46524C; --muted:#85908A;
+  --line:#DCD8CB; --grid:transparent;
+  --cn:#946A1C; --cn-soft:#F2EAD3; --w:#2A7A66; --w-soft:#DCEDE6; --on-cn:#FFFFFF;
   --ok:#2F7A4F; --ok-soft:#DDEFE3; --bad:#B23A2E; --bad-soft:#F6DDD8;
-  --map-sea:#E4ECEE; --map-land:#F3EAD3; --map-coast:#B7A784; --map-halo:#F6F0E0;
-  --shadow:0 1px 2px rgba(60,40,10,.08),0 2px 8px rgba(60,40,10,.06);
+  --map-sea:#E1EBE8; --map-land:#F1ECDC; --map-coast:#B2A787; --map-halo:#F3F0E8;
+  --shadow:none;
   --serif:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
   --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   --tabh:58px;
@@ -12,12 +12,12 @@
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --paper:#1C1814; --paper2:#26201A; --card:#28221C; --ink:#EFE6D6; --ink2:#CFC3AE; --muted:#9A8E7B;
-    --line:#3D352B; --grid:rgba(255,240,210,.035);
-    --cn:#E58275; --cn-soft:#3B241F; --w:#86ACDF; --w-soft:#1E2B3C;
+    --paper:#0F1916; --paper2:#16231F; --card:#16231F; --ink:#ECE6D4; --ink2:#C3C9BE; --muted:#869A92;
+    --line:#26372F; --grid:transparent;
+    --cn:#E0B966; --cn-soft:rgba(224,185,102,.12); --w:#6FC9AE; --w-soft:rgba(111,201,174,.12); --on-cn:#0F1916;
     --ok:#6FC28F; --ok-soft:#1E3326; --bad:#EC8577; --bad-soft:#3C2320;
-    --map-sea:#17212A; --map-land:#2B261E; --map-coast:#5C523F; --map-halo:#1C1814;
-    --shadow:0 1px 2px rgba(0,0,0,.3);
+    --map-sea:#0D1512; --map-land:#1D2B25; --map-coast:#3D5A4E; --map-halo:#0F1916;
+    --shadow:none;
     color-scheme:dark;
   }
 }
@@ -546,3 +546,32 @@ svg text{pointer-events:none}
 .nt-stat{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0 0 8px}
 
 .both .yr{font-size:11px;padding:2px 3px;min-width:0}
+
+/* ===== 青铜墨绿主题（v1.2）：细线框、无阴影、古铜金=中国、铜绿=世界 ===== */
+body{background-image:none}
+.top{border-bottom:1px solid var(--line)}
+.brand{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:1px}
+.period-head,.ev,.pchip,.same button,.btn,.pcard,.card,.q-o,.stat,.sl-ev,.sl-near button,.sl-chip,.sl-states,.lcard,.ucard,.nt-card{border:1px solid var(--line)}
+.period-head,.card{border-radius:16px}
+.cell.l .ev{border-right:2px solid var(--cn)} .cell.r .ev{border-left:2px solid var(--w)}
+.single.cn .ev{border-left:2px solid var(--cn)} .single.world .ev{border-left:2px solid var(--w)}
+.yr{border:0;background:var(--paper2);color:var(--ink2);font-weight:600}
+.single .yr{background:transparent}
+.both .rows::before{width:1px;opacity:.85;left:calc(50% - 1px)} .both .rows::after{width:1px;opacity:.85;left:50%}
+.seg{border:1px solid var(--line)}
+.seg button.on{background:var(--cn);color:var(--on-cn)!important;box-shadow:none}
+.seg button.on[data-mode=world]{background:var(--w)}
+.chip{background:transparent}
+.chip.on,.chip.cn.on{background:var(--cn);border-color:var(--cn);color:var(--on-cn)}
+.chip.w.on{background:var(--w);border-color:var(--w);color:var(--on-cn)}
+.tabbar{border-top:1px solid var(--line)} .tabbar button.on{color:var(--cn)}
+.btn.pri{background:var(--cn);border-color:var(--cn);color:var(--on-cn)}
+.btn.fav-on{color:var(--cn)}
+.sheet{border-top:1px solid var(--line)}
+.ph-name{font-weight:600}
+.page-h{font-weight:600}
+.nt-card.pin{border-left:3px solid var(--cn)}
+.nt-chip.on{background:var(--cn);border-color:var(--cn);color:var(--on-cn)}
+.nt-tag{color:var(--w)}
+.nt-attach{background:var(--w-soft);color:var(--w)}
+.nt-attach button{color:var(--w)}

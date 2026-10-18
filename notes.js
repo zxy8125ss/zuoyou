@@ -129,7 +129,7 @@ function tagsHTML() {
 }
 function mainHTML() {
   const lk = ui.link ? `<div class="nt-attach"><span>关联：${ui.link.k === 'ev' ? '事件' : '人物'} · ${esc(ui.link.title)}</span><button data-na="unlink" aria-label="取消关联">×</button></div>` : '';
-  return `<div class="page"><h2 class="page-h">记录</h2>${bannerHTML()}
+  return `<div class="page">${bannerHTML()}
     <div class="card nt-new"><textarea id="nt-in" rows="3" placeholder="随手记点什么…（用 #标签 分类）"></textarea>${lk}
       <div class="nt-row"><span class="nt-hint">草稿自动保存</span><button class="btn pri" data-na="add">保存</button></div></div>
     <input id="nt-q" class="nt-search" type="search" placeholder="搜索记录" value="${esc(ui.q)}" autocomplete="off">
