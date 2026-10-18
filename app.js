@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -667,7 +667,7 @@ function loadUnit(pid){
 const sideCls = s => s === 'cn' ? 'cn' : s === 'world' ? 'w' : '';
 const sideTxt = s => s === 'cn' ? '中国' : s === 'world' ? '世界' : '中外';
 function lessonCard(l){
-  return `<button class="lcard ${S.done.has(l.id) ? 'done' : ''}" data-act="lesson" data-v="${l.id}"><span class="lc-no ${sideCls(l.side)}">${l.special ? '专' : l.no}</span><span class="lc-m"><b>${esc(l.title)}</b><small>${(l.kinds || []).join(' · ')}</small></span><span class="lc-ok">${S.done.has(l.id) ? '✓' : ''}</span></button>`;
+  return `<button class="lcard ${S.done.has(l.id) ? 'done' : ''}" data-act="lesson" data-v="${l.id}"><span class="lc-no ${sideCls(l.side)}">${l.special ? '专' : l.no}</span><span class="lc-m"><b>${esc(l.title)}</b><small>${(l.kinds || []).join(' · ')}${(window.Notes && Notes.count(l.id)) ? `<em class="lc-n"> · 笔记 ${Notes.count(l.id)}</em>` : ''}</small></span><span class="lc-ok">${S.done.has(l.id) ? '✓' : ''}</span></button>`;
 }
 function renderUnits(){
   const ps = D.periods.filter(p => p.unit);

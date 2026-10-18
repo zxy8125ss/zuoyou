@@ -313,6 +313,6 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) document.querySelectorAll('.nt-ta').forEach(ta => ta.dataset.draft && lsSet(LSD + ta.dataset.draft, ta.value));
 });
 
-window.Notes = { lessonBox };
+window.Notes = { lessonBox, count: id => live().filter(x => x.link && x.link.k === 'lesson' && x.link.id === id).length };
 init();
 })();
