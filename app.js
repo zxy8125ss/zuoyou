@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = '1.0.4';
+const VERSION = '1.1.0';
 const REGIONS = {europe:'欧洲',westasia:'西亚北非',southasia:'南亚·东南亚',eastasia:'东亚（除中国）',america:'美洲',africa:'撒哈拉以南非洲',oceania:'大洋洲'};
 const QTYPE = {order:'谁先谁后',year:'年份',person:'人物配对',same:'同时代判断',cause:'前因后果'};
 
@@ -124,7 +124,7 @@ function delegated(e){
 
 function render(){
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
-  ({learn:renderLearn, slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, me:renderMe})[S.tab]();
+  ({learn:renderLearn, slice:renderSlice, timeline:renderTimeline, people:renderPeople, quiz:renderQuiz, notes:() => window.renderNotes(), me:renderMe})[S.tab]();
 }
 
 /* ---------- timeline ---------- */
@@ -289,7 +289,8 @@ function openEvent(id){
                    : `<div class="center" style="font-size:13px">前后 ${eraWin(e.year)} 年内暂无收录</div>`;
   h += `<div class="s-actions three"><button class="btn ${S.fav.has(id)?'fav-on':''}" data-act="fav" data-v="${id}">${S.fav.has(id)?'★ 已收藏':'☆ 收藏'}</button>
     <button class="btn" data-act="goSlice" data-v="${e.year}" data-p="${e.period}">看${y1(e.year)}年</button>
-    <button class="btn pri" data-act="locate" data-v="${id}">对照定位</button></div>`;
+    <button class="btn pri" data-act="locate" data-v="${id}">对照定位</button></div>
+    <div class="s-actions" style="margin-top:10px;grid-template-columns:1fr"><button class="btn" data-na="quick" data-k="ev" data-id="${id}">＋ 记一笔</button></div>`;
   openSheet(h);
   if (S.tab === 'timeline') { const c = document.querySelector(`.ev[data-ev="${id}"]`); c && c.classList.add('seen'); }
 }
@@ -307,7 +308,8 @@ function openPerson(id){
   h += `<div class="s-sec">相关事件 · ${evs.length}</div>`;
   h += evs.length ? `<div class="same">${evs.map(o => `<button data-ev="${o.id}"><span class="sy ${sc(o.side)}">${yLabel(o)}</span><span class="st">${esc(o.title)}</span></button>`).join('')}</div>` : '';
   h += `<div class="s-actions"><button class="btn ${fav?'fav-on':''}" data-act="fav" data-v="P:${id}">${fav?'★ 已收藏':'☆ 收藏'}</button>
-    <button class="btn pri" data-act="onlyPerson" data-v="${id}" ${evs.length?'':'disabled'}>时间轴只看 TA</button></div>`;
+    <button class="btn pri" data-act="onlyPerson" data-v="${id}" ${evs.length?'':'disabled'}>时间轴只看 TA</button></div>
+    <div class="s-actions" style="margin-top:10px;grid-template-columns:1fr"><button class="btn" data-na="quick" data-k="person" data-id="${id}">＋ 记一笔</button></div>`;
   openSheet(h);
 }
 
