@@ -1,4 +1,4 @@
-// 左右千年 构建脚本：node src/build.mjs
+// 千年对望 构建脚本：node src/build.mjs
 // 读取 src/<时期>/{events,people,rulers,geo,unit}.json，生成 data/ 与 maps/ 下的全部发布文件
 import fs from 'node:fs';
 import path from 'node:path';
